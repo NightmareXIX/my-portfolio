@@ -6,7 +6,7 @@
 //   L3 `BodySchema`  — strict; the client cannot supply conversation history.
 //   L4 `scrubOutput` — every chunk, before it leaves the server.
 //
-// Phase 4 wraps those in the cost and abuse controls (CHATBOT_PLAN §9/§10). Check order is
+// The cost and abuse controls wrap those. Check order is
 // deliberate and cheapest-first — every gate below is reached only if the ones above passed:
 //
 //   0. kill switch          `CHATBOT_ENABLED=false`, instant off, no upstream, no Redis

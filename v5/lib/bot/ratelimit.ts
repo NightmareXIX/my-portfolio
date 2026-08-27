@@ -1,4 +1,4 @@
-// The five limit layers from CHATBOT_PLAN §9, in the order the route applies them.
+// The five limit layers, in the order the route applies them.
 //
 //   0. Kill switch          CHATBOT_ENABLED=false      instant off, no redeploy
 //   1. Per-session burst    4 / 30s     sliding window, key = session cookie

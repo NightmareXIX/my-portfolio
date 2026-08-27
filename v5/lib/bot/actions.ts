@@ -30,7 +30,7 @@ export type ActionSpec = { label: string } & (
   | { href: string }
 );
 
-/** Compile-time constants from CHATBOT_PLAN §12. Never derived from model output or env. */
+/** Compile-time constants. Never derived from model output or env. */
 const GITHUB_URL = "https://github.com/NightmareXIX";
 const LINKEDIN_URL = "https://www.linkedin.com/in/fardin-islam-sadnan-162ba6248/";
 const EMAIL = "fardinislamsadnan@gmail.com";

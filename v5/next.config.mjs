@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
 
-// Static security headers (CHATBOT_PLAN §10). The Content-Security-Policy is NOT here:
+// Static security headers. The Content-Security-Policy is NOT here:
 // it carries a per-request nonce and is set in `middleware.ts`, because a value in this file
 // is baked at build time and a nonce that never changes is not a nonce.
 const securityHeaders = [

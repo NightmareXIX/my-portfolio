@@ -6,10 +6,10 @@
 // doesn't know (see REFUSAL_RULE).
 //
 // One deliberate divergence from PROFILE.md §3: that file's "primary/deepest stack" line
-// lists ASP.NET Core/C# alongside Node. CHATBOT_PLAN §3a corrects this — .NET was a one-off
+// lists ASP.NET Core/C# alongside Node. That overstates it — .NET was a one-off
 // exploration on OnnoRokom, not mastery. The tiering below is the authority for the bot.
 
-/** Gates the mobile number. One boolean, no logic redeploy. CHATBOT_PLAN §12. */
+/** Gates the mobile number. One boolean, no logic redeploy. */
 export const SHARE_PHONE = true;
 
 const PHONE_LINE = SHARE_PHONE

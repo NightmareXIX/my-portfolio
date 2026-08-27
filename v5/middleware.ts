@@ -1,10 +1,10 @@
-// Per-request CSP nonce (CHATBOT_PLAN §10, Phase 7.1).
+// Per-request CSP nonce.
 //
 // WHY MIDDLEWARE: the policy has to carry a fresh nonce on every response, so it cannot live
 // in `next.config.mjs`, whose headers are fixed at build time. Next reads the nonce back off
 // the request header it sees here and stamps it onto its own bootstrap/chunk-loader scripts.
 //
-// The two accommodations CHATBOT_PLAN §10 predicted, and what each one actually needed:
+// The two accommodations a nonce-based policy needs here, and why:
 //
 //   1. `next/font` (JetBrains Mono) — self-hosted at build time into /_next/static/media, so
 //      `font-src 'self'` is enough and no Google origin appears here. What it does need is a

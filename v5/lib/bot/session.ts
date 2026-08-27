@@ -1,4 +1,4 @@
-// Session identity and server-side history (CHATBOT_PLAN §10, Phase 4.1).
+// Session identity and server-side history.
 //
 // THIS IS NOT AUTHENTICATION. The cookie is an opaque 128-bit random id whose only jobs are
 // (a) keying the per-session rate limiter and (b) keying 24h of conversation history in Redis.

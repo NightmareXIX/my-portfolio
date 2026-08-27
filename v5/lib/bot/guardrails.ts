@@ -1,4 +1,4 @@
-// The four-layer defence from CHATBOT_PLAN §5. This file is L1 and L4 — both are pure
+// The four-layer defence. This file is L1 and L4 — both are pure
 // functions: no I/O, no env, no clock, no randomness. That is what lets the whole adversarial
 // fixture suite in `__tests__/guardrails.test.ts` run with zero API calls.
 //

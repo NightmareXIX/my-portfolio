@@ -1,7 +1,7 @@
 // One Upstash client for the whole bot. Edge-compatible (REST over fetch, no TCP).
 //
 // `redis()` returns null when the credentials are absent. Every caller MUST treat null and a
-// thrown request the same way: as Redis being down. And per CHATBOT_PLAN §10, Redis down means
+// thrown request the same way: as Redis being down. And Redis down means
 // FAIL CLOSED on rate limiting — see the comment in `ratelimit.ts`.
 
 import { Redis } from "@upstash/redis";

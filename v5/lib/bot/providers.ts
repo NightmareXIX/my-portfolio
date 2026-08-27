@@ -5,7 +5,7 @@
 //     export const PROVIDER_ORDER: readonly ProviderName[] = ["gemini", "groq"];
 //
 // Swapping the primary is that one line. That matters because Groq's verified ceiling is
-// 1,000 req/day against Gemini's 500 (CHATBOT_PLAN §9), so "Groq primary" is a plausible
+// 1,000 req/day against Gemini's 500, so "Groq primary" is a plausible
 // default, not a hypothetical — and a swap that requires rewriting a stream loop is a swap
 // nobody makes at 2am when the Gemini leg is throwing.
 
@@ -77,7 +77,7 @@ export function statusOf(error: unknown): number | undefined {
 /**
  * Should the route try the next provider?
  *
- * CHATBOT_PLAN §9 names 429 and 5xx. We deliberately go wider and fail over on ANY upstream
+ * The obvious failover triggers are 429 and 5xx. We deliberately go wider and fail over on ANY upstream
  * error that is not a client disconnect: a revoked or mistyped `GEMINI_API_KEY` surfaces as
  * 400/403, and "the key is bad" is precisely the outage where failover earns its keep. The one
  * thing we do NOT fail over on is our own 15s timeout — retrying a slow leg on a second

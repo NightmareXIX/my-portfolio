@@ -1,4 +1,4 @@
-// Adversarial fixtures for L1 and L4 (CHATBOT_PLAN §5). Everything here is a pure function
+// Adversarial fixtures for L1 and L4. Everything here is a pure function
 // call — ZERO API calls, no env, no network. `npm test` must stay runnable offline with no
 // GEMINI_API_KEY set.
 

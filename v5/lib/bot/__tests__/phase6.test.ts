@@ -211,7 +211,7 @@ describe("link actions resolve to the frozen constants", () => {
   });
 });
 
-describe("timings match CHATBOT_PLAN §7", () => {
+describe("navigation timings", () => {
   it("holds the specified durations", () => {
     expect(NAV_COLLAPSE_MS).toBe(240);
     expect(NAV_TWEEN_MS).toBe(700);

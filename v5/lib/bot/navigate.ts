@@ -1,4 +1,4 @@
-// Chip click → the page flies to a section. CHATBOT_PLAN §7.
+// Chip click → the page flies to a section.
 //
 // Step 1 of that spec (the panel collapsing to the badge) is React state and lives in
 // `components/Chatbot.tsx`; steps 2-4 — the tween, the landing flash, the travel toast's

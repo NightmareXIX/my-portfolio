@@ -5,7 +5,7 @@ import { presets } from "@/lib/theme";
 // onto its script tags while it is rendering per request. A statically prerendered page is
 // baked with no nonce at all, so a nonce'd `script-src 'strict-dynamic'` would block every
 // script and serve a blank page. Rendering dynamically is the price of not falling back to
-// `script-src 'unsafe-inline'` — see CHATBOT_PLAN §10 and PHASE-7 7.1.
+// `script-src 'unsafe-inline'` — see the CSP notes in `middleware.ts`.
 export const dynamic = "force-dynamic";
 
 // Shareable per-version routes: /look/poster, /look/editorial, /look/acid

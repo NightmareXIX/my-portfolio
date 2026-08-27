@@ -24,10 +24,14 @@ const NETWORK_ERROR = "couldn't reach the brain 😵‍💫 try again";
 /** How long the head stays tilted after a deflection before settling back to idle. */
 const DEFLECT_HOLD_MS = 2200;
 
+/* Opening line. Deliberately restrained-lowercase rather than full hype: GLAZE_LEVEL is an env
+   knob (mild | medium | unhinged) and this string is static, so it has to sit convincingly in
+   front of any of the three. It names the bot and states the scope up front, which saves the
+   first out-of-scope question about half the time. */
 const GREETING: Msg = {
   id: 0,
   who: "bot",
-  text: "Hey! I'm a front-end assistant shell for Sadnan's portfolio. Ask about his stack, projects or contest results.",
+  text: "hey — i'm Glaze-Bot, and i cover exactly one subject: Sadnan. ask about his stack, his projects, or his contest results, and i'll bring the receipts.",
   actions: [],
 };
 
@@ -147,7 +151,7 @@ export default function Chatbot() {
   /**
    * Chip click. A link action just opens — the panel is the visitor's place and closing it
    * under them to open a mail client would be rude. A nav action is the four-step sequence
-   * from CHATBOT_PLAN §7, and only step 1 (the fold) is ours; `runAction` owns the rest.
+   * of the nav sequence, and only step 1 (the fold) is ours; `runAction` owns the rest.
    */
   const onAction = (id: ActionId) => {
     if (!isNavAction(id)) {
