@@ -23,10 +23,10 @@ type Props = {
 };
 
 const LABEL: Record<BotState, string> = {
-  idle: "Sadnan-Bot",
-  thinking: "Sadnan-Bot is thinking",
-  speaking: "Sadnan-Bot is replying",
-  deflecting: "Sadnan-Bot is dodging that one",
+  idle: "Glaze-Bot",
+  thinking: "Glaze-Bot is thinking",
+  speaking: "Glaze-Bot is replying",
+  deflecting: "Glaze-Bot is dodging that one",
 };
 
 export default function BotAvatar({ state = "idle", size = "head", className }: Props) {

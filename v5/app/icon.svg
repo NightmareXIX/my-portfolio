@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" shape-rendering="crispEdges">
+  <!-- Tab mark: the nav logo's S, cut down to what survives 16px. The lockup's yellow ground
+       and black slab read at any size; letterforms and the pink "!" do not, so the S is drawn
+       as five bars rather than set in a typeface.
+       Geometry is tuned for the 16px case, where the whole tile is four device pixels wide per
+       SVG bar: bars are 10 units so they land on 2.5px, counters 6 so they stay open, and the
+       frame is 3 rather than 4 so it does not eat the bowl of the S at that size. -->
+  <rect width="64" height="64" fill="#ffd400"/>
+  <rect x="1.5" y="1.5" width="61" height="61" fill="none" stroke="#0c0c0c" stroke-width="3"/>
+  <g fill="#0c0c0c">
+    <rect x="11" y="11" width="42" height="10"/>
+    <rect x="11" y="27" width="42" height="10"/>
+    <rect x="11" y="43" width="42" height="10"/>
+    <rect x="11" y="11" width="10" height="26"/>
+    <rect x="43" y="27" width="10" height="26"/>
+  </g>
+</svg>

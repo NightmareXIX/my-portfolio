@@ -34,6 +34,20 @@ const HERO_ICONS = [
   <path key="u" d="M20 3 L20 37 M3 20 L37 20 L20 3 M8 8 L32 32 M32 8 L8 32" fill="none" />,
 ];
 
+// Icons the mobile lane shows, out of HERO_ICONS: star, 4-point sparkle, zigzag. Three, not
+// six — the lane beside the stamp is the one blank strip a phone reliably has, and six in it
+// would read as a row of clutter rather than scatter.
+const LANE_ICONS = [0, 2, 4];
+
+function Doodle({ children }: { children: React.ReactNode }) {
+  return (
+    <svg viewBox="0 0 40 40" width="100%" height="100%" fill="none"
+      stroke="currentColor" strokeWidth={4} strokeLinejoin="round" strokeLinecap="round">
+      {children}
+    </svg>
+  );
+}
+
 export default function Sections() {
   // Scroll-reveal: fade + rise each section as it enters the viewport.
   // Applied at section level so per-card tilts are left untouched.
@@ -93,12 +107,7 @@ export default function Sections() {
           <div className="hero-floaties" aria-hidden="true">
             {HERO_ICONS.map((icon, i) => (
               <span className={`fl fl${i + 1}`} key={i}>
-                <span className="fl-in">
-                  <svg viewBox="0 0 40 40" width="100%" height="100%" fill="none"
-                    stroke="currentColor" strokeWidth={4} strokeLinejoin="round" strokeLinecap="round">
-                    {icon}
-                  </svg>
-                </span>
+                <span className="fl-in"><Doodle>{icon}</Doodle></span>
               </span>
             ))}
           </div>
@@ -113,9 +122,20 @@ export default function Sections() {
                 <a href="#projects" className="btn btn-primary">View Projects →</a>
                 <a href="#contact" className="btn btn-ghost">Contact</a>
               </div>
-              <div className="hero-stamp" aria-label="Available for hire">
-                <span className="st-star">✸</span>
-                <span className="st-text disp">Available<br />for hire</span>
+              {/* The stamp hugs its own content, so the strip to its right is blank at every
+                  phone width — that is where the mobile doodles live. See .stamp-lane. */}
+              <div className="stamp-lane">
+                <div className="hero-stamp" aria-label="Available for hire">
+                  <span className="st-star">✸</span>
+                  <span className="st-text disp">Available<br />for hire</span>
+                </div>
+                <span className="lane-floaties" aria-hidden="true">
+                  {LANE_ICONS.map((n, i) => (
+                    <span className={`lf lf${i + 1}`} key={n}>
+                      <span className="fl-in"><Doodle>{HERO_ICONS[n]}</Doodle></span>
+                    </span>
+                  ))}
+                </span>
               </div>
             </div>
             <div className="hero-right">

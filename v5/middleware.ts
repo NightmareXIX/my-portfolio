@@ -119,5 +119,5 @@ export const config = {
   // accepts a plain string or string[], not the object form. Dropping it just means prefetch
   // requests also get a nonce stamped on them, which is thrown away unused — no behavior change
   // for a rendered page.
-  matcher: ["/((?!_next/static|_next/image|favicon.ico|assets/|portrait.jpg|resume.pdf).*)"],
+  matcher: ["/((?!_next/static|_next/image|favicon.ico|icon.svg|assets/|portrait.jpg|resume.pdf).*)"],
 };

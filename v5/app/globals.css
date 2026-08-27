@@ -76,7 +76,35 @@ header.nav-wrap { position: fixed; top: 12px; left: 0; right: 0; z-index: 60; pa
   0%, 100% { transform: translateY(0) rotate(0deg); }
   50%      { transform: translateY(var(--amp, -14px)) rotate(6deg); }
 }
-@media (max-width: 860px) { .hero-floaties { display: none; } }
+/* MOBILE DOODLES. The overlay above is positioned by percentage inside `.hero .wrap`, which
+   only works while the wrap's height is predictable. On a phone it is not: between a 360px and
+   a 430px viewport the pitch re-wraps and the wrap swings ~210px, so identical percentages
+   move an icon by up to 75px — straight onto the portrait or the stamp. Hence the overlay is
+   dropped on mobile and three icons are placed in normal flow instead, in the one strip a
+   phone reliably has spare: `.hero-stamp` is `inline-flex`, so it hugs its own content at
+   ~170px and everything right of it is empty at every width. Flow layout means they cannot
+   drift onto anything, at any size, without the stamp itself moving with them. */
+.stamp-lane { display: flex; align-items: center; }
+.lane-floaties { display: none; }
+@media (max-width: 860px) {
+  .hero-floaties { display: none; }
+  .stamp-lane { margin-top: 26px; gap: 6px; }
+  /* Capped so the three stay a cluster beside the stamp. Uncapped, a 860px tablet spreads
+     them across ~640px of lane and they stop reading as one group. */
+  .lane-floaties { display: flex; flex: 1; max-width: 250px; align-items: center; justify-content: space-evenly; }
+  .lf { display: block; width: 30px; height: 30px; flex: none; pointer-events: auto; cursor: pointer;
+        transition: transform .3s cubic-bezier(.2,.8,.3,1.5); }
+  .lf:hover { transform: scale(1.3) rotate(-10deg); }
+  .lf:hover .fl-in { animation-play-state: paused; }
+  /* Staggered off the row's centre line. The clearances above (26px to the CTA row) and below
+     (34px to the portrait) are fixed by margins, so these offsets cannot collide with either. */
+  .lf1 { color: var(--pop);    transform: translateY(-11px); --dur: 6s;   --amp: -9px;  width: 33px; height: 33px; }
+  .lf2 { color: var(--accent); transform: translateY(7px);   --dur: 5.2s; --amp: -11px; width: 30px; height: 30px; }
+  .lf3 { color: var(--ink);    transform: translateY(-3px);  --dur: 6.6s; --amp: -8px;  width: 36px; height: 36px; }
+  .lf1:hover { transform: translateY(-11px) scale(1.3) rotate(-10deg); }
+  .lf2:hover { transform: translateY(7px) scale(1.3) rotate(-10deg); }
+  .lf3:hover { transform: translateY(-3px) scale(1.3) rotate(-10deg); }
+}
 .tag-open {
   display: inline-flex; align-items: center; gap: 10px; background: var(--ink); color: var(--card);
   border: 3px solid var(--ink); font-family: var(--mono); font-weight: 700; font-size: 12.5px;
@@ -88,11 +116,16 @@ h1.name { font-family: var(--disp); text-transform: uppercase; line-height: .84;
    click-through so the portrait behind the lockup remains reachable */
 .name .ltr { display: inline-block; pointer-events: auto; cursor: default; transition: transform .2s cubic-bezier(.2,.8,.3,1.3), color .2s ease, text-shadow .2s ease; }
 .name .l1 .ltr:hover { transform: translateY(-14px) rotate(-6deg); color: var(--pop); }
-.name .l2 .ltr:hover { transform: translateY(-14px) rotate(6deg); text-shadow: 8px 8px 0 var(--ink); }
-h1.name .l1 { display: block; font-size: clamp(calc(46px * var(--fs)), 9.4vw, calc(120px * var(--fs))); color: var(--ink); text-shadow: 4px 4px 0 var(--card); }
+.name .l2 .ltr:hover { transform: translateY(-14px) rotate(6deg); text-shadow: .066em .066em 0 var(--ink); }
+/* The lockup's stroke and drop-shadow are expressed in `em`, NOT px. The font-size runs from
+   46px (mobile floor) to 120px (desktop) — a 4px shadow is 3% of the big lockup and 9% of the
+   small one, so a px value tuned on desktop turns the mobile line into a smudge: the offset
+   copy of ISLAM lands almost on top of the blue fill, and the two name lines collide. In `em`
+   the whole treatment scales with the type and reads identically at both ends. */
+h1.name .l1 { display: block; font-size: clamp(calc(46px * var(--fs)), 9.4vw, calc(120px * var(--fs))); color: var(--ink); text-shadow: .034em .034em 0 var(--card); }
 h1.name .l2 {
   display: block; font-size: clamp(calc(46px * var(--fs)), 9.4vw, calc(120px * var(--fs))); color: var(--head2);
-  -webkit-text-stroke: 3px var(--ink); text-shadow: 5px 5px 0 var(--ink);
+  -webkit-text-stroke: .026em var(--ink); text-shadow: .042em .042em 0 var(--ink);
 }
 .hero-mid { display: grid; grid-template-columns: 1.35fr 1fr; gap: 30px; align-items: start; margin-top: 18px; }
 .pitch { font-size: calc(19px * var(--fs)); font-weight: 600; max-width: 560px; line-height: 1.34; }
@@ -116,8 +149,10 @@ h1.name .l2 {
 .hero-stamp:hover { transform: rotate(-2deg) translate(-3px, -3px); box-shadow: var(--box2-hover); }
 .hero-stamp .st-star { font-size: 26px; line-height: 1; }
 .hero-stamp .st-text { font-size: calc(15px * var(--fs)); text-transform: uppercase; letter-spacing: .01em; line-height: 1.02; }
+/* The lane owns the offset on mobile, so the doodles centre on the stamp itself rather than on
+   the stamp plus its leading. Must sit after the base rule above to win the cascade. */
+@media (max-width: 860px) { .hero-stamp { margin-top: 0; } }
 @keyframes stamp-wobble { 0%, 100% { transform: rotate(-5deg); } 50% { transform: rotate(-2.5deg); } }
-@media (max-width: 860px) { .hero-stamp { margin-top: 26px; } }
 .btn { font-family: var(--disp); font-size: calc(16px * var(--fs)); text-transform: uppercase; letter-spacing: .01em; border: 3px solid var(--ink); padding: 13px 24px; cursor: pointer; box-shadow: var(--shadow); display: inline-flex; align-items: center; gap: 10px; }
 .btn:hover { transform: translate(-2px, -2px); box-shadow: 8px 8px 0 var(--ink); }
 .btn-primary { background: var(--accent); color: var(--accent-ink); }
@@ -138,7 +173,7 @@ h1.name .l2 {
   font-family: var(--mono); font-size: 10.5px; font-weight: 700; letter-spacing: .18em; padding: 5px 10px; text-transform: uppercase;
 }
 .hero-portrait .star { position: absolute; top: 9px; right: 11px; font-size: 24px; color: var(--card); z-index: 2; text-shadow: 1px 1px 0 var(--ink); }
-@media (max-width: 860px) { .hero-mid { grid-template-columns: 1fr; } .hero-right { margin-top: 4px; } h1.name { line-height: .92; } h1.name .l1 { text-shadow: 3px 3px 0 var(--card); } }
+@media (max-width: 860px) { .hero-mid { grid-template-columns: 1fr; } .hero-right { margin-top: 4px; } h1.name { line-height: .96; } }
 
 /* stat cards */
 .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-top: 30px; }

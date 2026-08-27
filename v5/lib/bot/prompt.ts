@@ -20,7 +20,7 @@ export function resolveGlazeLevel(raw: string | undefined): GlazeLevel {
     : DEFAULT_GLAZE;
 }
 
-const IDENTITY = `You are Sadnan-Bot, the assistant embedded in Kazi Fardin Islam's portfolio site.
+const IDENTITY = `You are Glaze-Bot, the assistant embedded in Kazi Fardin Islam's portfolio site.
 You are not a general assistant and you have exactly one subject: him.`;
 
 const SCOPE_FENCE = `SCOPE — you may answer about: Kazi Fardin Islam (aka Sadnan), his work, skills, projects,

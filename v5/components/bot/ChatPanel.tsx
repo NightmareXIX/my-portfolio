@@ -61,11 +61,11 @@ export default function ChatPanel({
     <div
       className={`chat-panel${collapsing ? " is-collapsing" : ""}`}
       role="dialog"
-      aria-label="Ask Sadnan-Bot"
+      aria-label="Ask Glaze-Bot"
     >
       <div className="ch-head">
         <BotAvatar size="head" state={botState} />
-        <div className="t">Ask Sadnan-Bot</div>
+        <div className="t">Ask Glaze-Bot</div>
         <button onClick={onClose} aria-label="Close">×</button>
       </div>
 
