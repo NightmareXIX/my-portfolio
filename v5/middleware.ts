@@ -19,34 +19,67 @@ import { NextResponse, type NextRequest } from "next/server";
 
 const isDev = process.env.NODE_ENV !== "production";
 
+// The directives that do not depend on a nonce. Both policies below are built from this list,
+// so they can never drift apart.
+const staticDirectives = [
+  "default-src 'self'",
+  "img-src 'self' data: blob:",
+  "font-src 'self'",
+  // The chat route is same-origin. Dev also talks to the HMR websocket.
+  `connect-src 'self'${isDev ? " ws: wss:" : ""}`,
+  "object-src 'none'",
+  "base-uri 'self'",
+  "form-action 'self'",
+  "frame-ancestors 'none'",
+  "frame-src 'none'",
+  "worker-src 'self' blob:",
+  "manifest-src 'self'",
+  "media-src 'none'",
+  ...(isDev ? [] : ["upgrade-insecure-requests"]),
+];
+
+// The degraded policy used only on the fail-open path below. Next's bootstrap scripts are inline
+// and un-nonced once nonce generation is out of the picture, so they need 'unsafe-inline' — the
+// rest of the policy is unchanged. Strictly worse than the nonced one, strictly better than none.
+const fallbackCsp = [
+  `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""}`,
+  "style-src 'self' 'unsafe-inline'",
+  ...staticDirectives,
+].join("; ");
+
 export function middleware(request: NextRequest) {
-  // `Buffer` is Node-only. Next's local edge-runtime simulation polyfills it (so this built and
-  // ran fine locally), but Vercel's actual production Edge Runtime does not, and throws
-  // MIDDLEWARE_INVOCATION_FAILED on every request. `btoa` is the Web-standard equivalent, and
-  // safe here since crypto.randomUUID() is plain ASCII (hex digits + hyphens).
+  try {
+    return withNonceCsp(request);
+  } catch {
+    // FAIL OPEN. A middleware that throws takes the whole site down with a Vercel
+    // MIDDLEWARE_INVOCATION_FAILED 500 — every route, no HTML, no way in. A nonce is not worth
+    // that, so anything unexpected in here degrades the POLICY instead of the SITE.
+    try {
+      const response = NextResponse.next();
+      response.headers.set("Content-Security-Policy", fallbackCsp);
+      return response;
+    } catch {
+      // NextResponse itself is unusable — nothing left to do but let the request through
+      // un-headered. Next's adapter turns `undefined` into a plain pass-through.
+      return undefined;
+    }
+  }
+}
+
+// `btoa` over `Buffer.from(...).toString("base64")`: both work (Next polyfills Buffer into the
+// edge bundle), but btoa is the Web-standard one and carries no Node baggage into the isolate.
+// crypto.randomUUID() is plain ASCII, so btoa is safe on it.
+function withNonceCsp(request: NextRequest) {
   const nonce = btoa(crypto.randomUUID());
 
   const csp = [
-    "default-src 'self'",
     // 'strict-dynamic' means the nonced loader may pull its own chunks, and host allowlists
     // stop mattering — the nonce is the whole authority. Dev needs 'unsafe-eval' for HMR.
     `script-src 'self' 'nonce-${nonce}' 'strict-dynamic'${isDev ? " 'unsafe-eval'" : ""}`,
     // Dev's HMR injects un-nonced <style> tags; production gets the nonce alone.
     `style-src 'self' 'nonce-${nonce}'${isDev ? " 'unsafe-inline'" : ""}`,
     "style-src-attr 'unsafe-inline'",
-    "img-src 'self' data: blob:",
-    "font-src 'self'",
-    // The chat route is same-origin. Dev also talks to the HMR websocket.
-    `connect-src 'self'${isDev ? " ws: wss:" : ""}`,
-    "object-src 'none'",
-    "base-uri 'self'",
-    "form-action 'self'",
-    "frame-ancestors 'none'",
-    "frame-src 'none'",
-    "worker-src 'self' blob:",
-    "manifest-src 'self'",
-    "media-src 'none'",
-    ...(isDev ? [] : ["upgrade-insecure-requests"]),
+    ...staticDirectives,
   ].join("; ");
 
   // Next reads `x-nonce` off the request to nonce its own script tags.
