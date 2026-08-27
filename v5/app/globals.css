@@ -265,6 +265,173 @@ footer.site-foot { background: var(--ink); color: var(--sel); border-top: 4px so
 .ch-input input { flex: 1; border: 2px solid var(--ink); padding: 10px 12px; font-family: var(--mono); font-size: 13px; outline: none; }
 .ch-input button { background: var(--accent); color: var(--accent-ink); border: 2px solid var(--ink); font-weight: 900; padding: 0 16px; cursor: pointer; box-shadow: 2px 2px 0 var(--ink); }
 
+
+/* ===== bot mascot =====
+   Every fill/stroke is a palette var so the avatar re-skins with the live control panel —
+   there is not a hex in this block or in BotAvatar.tsx. Motion is CSS-only and keyed off the
+   svg's data-state; see the reduced-motion block at the bottom of this section. */
+.bot-avatar { display: block; flex: none; overflow: visible; }
+.bot-avatar--badge { width: 40px; height: 40px; filter: drop-shadow(4px 4px 0 var(--ink)); }
+.bot-avatar--head { width: 28px; height: 28px; }
+.bot-avatar--msg { width: 22px; height: 22px; }
+
+/* Transforms are authored in the 64-unit viewBox, so every animated part needs its own box. */
+.bot-avatar g, .bot-avatar circle, .bot-avatar rect, .bot-avatar path { transform-box: fill-box; transform-origin: 50% 50%; }
+.bot-avatar circle, .bot-avatar rect, .bot-avatar path {
+  stroke: var(--ink); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round;
+}
+.ba-head { fill: var(--sel); }
+.ba-visor { fill: var(--pop); }
+.ba-mouth-plate, .ba-foot { fill: var(--accent); }
+.ba-tip { fill: var(--pop); }
+.ba-ant-stem, .ba-eye, .ba-brow, .ba-stripe { fill: none; }
+/* These three need the extra class to outweigh the type-qualified rule above, which would
+   otherwise force the whole mascot to one 3-unit stroke. The mouth stripes take --paper
+   rather than --ink: in the acid palette --accent IS near-black, and ink-on-ink would erase
+   the stripes — which are the entire speaking animation. */
+.bot-avatar .ba-eye { stroke-width: 2.4; }
+.bot-avatar .ba-stripe { stroke: var(--paper); stroke-width: 1.7; }
+.bot-avatar .ba-brow { opacity: 0; stroke-width: 2.4; }
+
+/* idle — a slow bob with the two antennae swaying out of phase */
+.ba-body { animation: ba-bob 4s ease-in-out infinite; }
+.ba-ant--l { transform-origin: 100% 100%; animation: ba-sway 4s ease-in-out infinite; }
+.ba-ant--r { transform-origin: 0 100%; animation: ba-sway 4s ease-in-out infinite reverse; animation-delay: -1.3s; }
+@keyframes ba-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-2.2px); } }
+@keyframes ba-sway { 0%, 100% { transform: rotate(-5deg); } 50% { transform: rotate(5deg); } }
+
+/* blink — deliberately irregular: the two blinks in each 7.4s cycle are 3.2s and 4.2s apart,
+   so it never reads as a metronome the way a single-blink loop does. */
+.ba-eyes { transform-origin: 50% 100%; animation: ba-blink 7.4s infinite; }
+@keyframes ba-blink {
+  0%, 19%, 21%, 62%, 64%, 100% { transform: scaleY(1); }
+  19.8%, 20.2%, 62.8%, 63.2% { transform: scaleY(.12); }
+}
+
+/* thinking — visor cycles pop → accent, antenna tips pulse */
+.bot-avatar[data-state="thinking"] .ba-visor { animation: ba-think 1s ease-in-out infinite alternate; }
+.bot-avatar[data-state="thinking"] .ba-tip { animation: ba-pulse .9s ease-in-out infinite alternate; }
+@keyframes ba-think { from { fill: var(--pop); } to { fill: var(--accent); } }
+@keyframes ba-pulse { from { transform: scale(1); } to { transform: scale(1.28); } }
+
+/* speaking — the mouth stripes run a 3-frame wave, stepped rather than eased so it reads as
+   animation cels, not a smooth tween */
+.bot-avatar[data-state="speaking"] .ba-stripe { animation: ba-wave .42s steps(1, end) infinite; }
+.bot-avatar[data-state="speaking"] .ba-stripe--2 { animation-delay: .14s; }
+.bot-avatar[data-state="speaking"] .ba-stripe--3 { animation-delay: .28s; }
+@keyframes ba-wave { 0%, 100% { transform: scaleY(1); } 33% { transform: scaleY(.4); } 66% { transform: scaleY(.75); } }
+
+/* deflecting — one tilt that lands and holds, plus the raised eyebrow. This is the state that
+   sells a refusal, so it settles into a pose instead of looping. */
+.bot-avatar[data-state="deflecting"] .ba-body { transform-origin: 50% 92%; animation: ba-tilt .45s cubic-bezier(.3, 1.5, .4, 1) forwards; }
+.bot-avatar[data-state="deflecting"] .ba-brow { animation: ba-brow .45s ease-out forwards; }
+@keyframes ba-tilt { from { transform: rotate(0); } to { transform: rotate(12deg); } }
+@keyframes ba-brow { from { opacity: 0; transform: translateY(2px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ===== panel: rows, chips, caret ===== */
+#chatBadge { padding: 9px 16px 9px 11px; }
+.ch-badge-label { line-height: 1; }
+.ch-head { gap: 10px; }
+.ch-head .t { flex: 1; }
+.ch-row { display: flex; gap: 8px; align-items: flex-start; }
+.ch-row.me { justify-content: flex-end; }
+.ch-msg-av { margin-top: 3px; }
+.ch-stack { display: flex; flex-direction: column; gap: 6px; max-width: 88%; min-width: 0; }
+.ch-row.me .ch-stack { align-items: flex-end; }
+.ch-msg { max-width: 100%; word-break: break-word; }
+/* Caret sits on the last text node of a streaming bubble. */
+.ch-caret { display: inline-block; width: 8px; height: 1em; margin-left: 3px; vertical-align: -2px; background: var(--ink); animation: blink 1s steps(1, end) infinite; }
+.ch-actions { display: flex; flex-wrap: wrap; gap: 6px; }
+.ch-action {
+  font-family: var(--mono); font-weight: 700; font-size: 11px; text-transform: uppercase; letter-spacing: .03em;
+  background: var(--sel); color: var(--ink); border: 2px solid var(--ink); padding: 6px 9px; cursor: pointer;
+  box-shadow: 2px 2px 0 var(--ink); transform: rotate(-1deg);
+}
+.ch-action:hover { background: var(--accent); color: var(--accent-ink); transform: rotate(-1deg) translate(-1px, -1px); box-shadow: 3px 3px 0 var(--ink); }
+.ch-chips button:disabled, .ch-input input:disabled, .ch-input button:disabled { opacity: .55; cursor: not-allowed; }
+.chat-panel { bottom: 96px; }
+
+/* ===== Phase 6: navigation landing beat =====
+   `navigate.ts` puts one of these two classes on the arrived-at section and takes it off
+   again — .nav-flash for 900ms, .nav-flash-static for 600ms under reduced motion.
+
+   No new visual vocabulary: the band's own 4px ink border flashes, and the depth cue is this
+   system's offset hard shadow. The shadow is INSET because a band is full-bleed — an outset
+   6-10px offset would be clipped horizontally by the root's `overflow-x: hidden` and painted
+   over vertically by the next section. Inset keeps the same 4px→10px hard-shadow read with
+   nothing to clip. */
+.nav-flash, .nav-flash-static {
+  /* --pop on a pop band is an invisible flash; each band picks the colour it can show. */
+  --flash: var(--pop);
+}
+.band.pop.nav-flash, .band.pop.nav-flash-static { --flash: var(--accent); }
+.band.accent.nav-flash, .band.accent.nav-flash-static { --flash: var(--sel); }
+
+/* linear on purpose: an animation-level ease warps the keyframe percentages below, which
+   collapses the 4px→10px build into a couple of frames. The shape lives in the stops. */
+.nav-flash { animation: nav-flash 900ms linear 1 both; }
+@keyframes nav-flash {
+  0%   { border-color: var(--ink);   box-shadow: inset 0 0 0 0 var(--ink); }
+  12%  { border-color: var(--flash); box-shadow: inset 4px 4px 0 0 var(--ink); }
+  45%  { border-color: var(--flash); box-shadow: inset 10px 10px 0 0 var(--ink); }
+  100% { border-color: var(--ink);   box-shadow: inset 0 0 0 0 var(--ink); }
+}
+
+/* The heading takes the 2° overshoot and settles — the arrival's punctuation. */
+.nav-flash h2.sec-title { transform-origin: 0 100%; animation: nav-flash-head 900ms linear 1 both; }
+@keyframes nav-flash-head {
+  0%   { transform: rotate(0deg); }
+  16%  { transform: rotate(-2deg); }
+  34%  { transform: rotate(-2deg); }
+  62%  { transform: rotate(.7deg); }
+  82%  { transform: rotate(-.25deg); }
+  100% { transform: rotate(0deg); }
+}
+
+/* Reduced motion: nothing moves, nothing pulses. A static ring marks where you landed and
+   then goes away. Inset offset so a full-bleed band's ring stays on screen. */
+.nav-flash-static { outline: 4px solid var(--flash); outline-offset: -10px; }
+
+/* ===== Phase 6: panel collapse + travel toast ===== */
+/* Step 1 of the nav: the panel folds toward the badge. `transform` and `opacity` only —
+   compositor work, no layout, so it never fights the scroll tween that follows it. */
+.chat-panel.is-collapsing { animation: ch-collapse 240ms cubic-bezier(.5, 0, .9, .4) forwards; transform-origin: 100% 100%; pointer-events: none; }
+@keyframes ch-collapse {
+  from { transform: scale(1) translate(0, 0); opacity: 1; }
+  to   { transform: scale(.55) translate(26px, 44px); opacity: 0; }
+}
+
+.ch-toast {
+  position: absolute; right: 0; bottom: calc(100% + 11px); z-index: 1; pointer-events: none;
+  background: var(--sel); color: var(--ink); border: 3px solid var(--ink); box-shadow: var(--shadow-sm);
+  font-family: var(--mono); font-weight: 700; font-size: 11px; text-transform: uppercase;
+  letter-spacing: .04em; padding: 7px 10px; white-space: nowrap;
+  animation: ch-toast-in .22s cubic-bezier(.3, 1.5, .4, 1) both;
+}
+@keyframes ch-toast-in {
+  from { opacity: 0; transform: translateY(7px) rotate(1deg); }
+  to   { opacity: 1; transform: translateY(0) rotate(1deg); }
+}
+
+@media (max-width: 420px) {
+  #chatBadge { right: 12px; bottom: 12px; }
+  .chat-panel { right: 12px; left: 12px; width: auto; bottom: 84px; }
+  .ch-body { max-height: min(44vh, 290px); }
+  .ch-stack { max-width: calc(100% - 30px); }
+}
+
+/* All mascot motion off. The deflect tilt and the raised brow survive as a static pose —
+   they carry meaning, and holding them changes no layout. */
+@media (prefers-reduced-motion: reduce) {
+  .bot-avatar *, .ch-caret { animation: none !important; }
+  .bot-avatar[data-state="deflecting"] .ba-body { transform-origin: 50% 92%; transform: rotate(12deg); }
+  .bot-avatar[data-state="deflecting"] .ba-brow { opacity: 1; }
+  /* The flash class is never applied under reduced motion (navigate.ts picks the static
+     one), but if it ever were, it must not animate. Same for the collapse and the toast. */
+  .nav-flash, .nav-flash h2.sec-title, .chat-panel.is-collapsing, .ch-toast { animation: none; }
+  .chat-panel.is-collapsing { opacity: 0; }
+}
+
 /* ============================================================
    COMIC BOXINESS — tilts, hover-pops, entrance + scroll reveals
    ============================================================ */

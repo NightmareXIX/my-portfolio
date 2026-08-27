@@ -26,3 +26,12 @@ Thumbs.db
 
 # tool scratch
 .playwright-mcp/
+
+# local agent/tool state — machine-specific, not project config
+.claude/settings.local.json
+.impeccable/hook.cache.json
+.impeccable/config.local.json
+.codex/
+
+# vercel
+.vercel/

@@ -10,8 +10,10 @@ export const profile = {
   email: "fardinislamsadnan@gmail.com",
   phone: "+8801886694400",
   phoneDisplay: "+880 1886 694400",
-  linkedin: "/in/kazi-fardin-islam",
-  github: "github.com/sadnan",
+  linkedin: "/in/fardin-islam-sadnan-162ba6248",
+  linkedinUrl: "https://www.linkedin.com/in/fardin-islam-sadnan-162ba6248/",
+  github: "github.com/NightmareXIX",
+  githubUrl: "https://github.com/NightmareXIX",
   pitch:
     "role-based APIs, multi-provider LLM gateways, real-time platforms — backed by real test suites and Dockerized infra, not MVP scope.",
 };
@@ -27,7 +29,7 @@ export const about = [
   {
     no: "i.",
     h: "Backend / Full-stack Engineer",
-    p: "REST APIs, role-based authorization and relational data models — most fluently in C#/ASP.NET Core and Node.js/Express, growing across Next.js, React and TypeScript.",
+    p: "REST APIs, role-based authorization and relational data models — most fluently in Node.js/Express and FastAPI/Python over PostgreSQL, with Next.js, React and TypeScript on the front end.",
   },
   {
     no: "ii.",
@@ -47,10 +49,10 @@ export const skills = [
     items: [
       "REST API design & implementation",
       "RBAC + ownership-scoped authorization (resource-level)",
-      "Relational DB design & ORM (EF Core, raw PG/MySQL)",
+      "Relational DB design & ORM (raw PostgreSQL/MySQL, EF Core)",
       "State machine design with server-side invariants",
       "Microservices & API gateway patterns",
-      "Automated testing (auth-focused, no mocking frameworks)",
+      "Automated testing (auth-focused, no mocking frameworks) — 86 real xUnit auth tests on OnnoRokom",
       "Structured logging & observability (Serilog)",
       "Containerization (Docker Compose)",
     ],
@@ -82,13 +84,13 @@ export const skills = [
     ],
     pills: [
       "Node/Express",
-      "Next.js",
-      "PostgreSQL",
-      "Docker",
-      "ASP.NET Core",
       "FastAPI",
+      "PostgreSQL",
+      "Next.js",
+      "Docker",
       "Redis",
       "Flutter",
+      "ASP.NET Core",
     ],
   },
 ];
@@ -99,7 +101,7 @@ export const projects = [
     status: "Complete",
     statusKind: "done",
     tag: "Role-based assignment & submission platform",
-    ctx: "Originally a take-home for a job application; expanded into a full portfolio project.",
+    ctx: "Originally a take-home for a job application; expanded into a full portfolio project. A deliberate one-off run at the .NET ecosystem — the transferable claim here is the testing rigour, not the stack.",
     stack: ["ASP.NET Core 8", "PostgreSQL", "Next.js", "TypeScript", "EF Core", "JWT"],
     bullets: [
       "Admin/Teacher/Student roles with strict ownership-scoped access, verified by dedicated auth test suites.",
@@ -108,8 +110,8 @@ export const projects = [
       "3-service Docker Compose stack validated end-to-end vs live Postgres.",
     ],
     links: [
-      { label: "Repo ↗", href: "#" },
-      { label: "Demo ↗", href: "#" },
+      { label: "Repo ↗", href: "https://github.com/NightmareXIX/onnorokom-as-management-system" },
+      { label: "Demo ↗", href: "https://assignment-system-frontend.vercel.app/login" },
     ],
   },
   {
@@ -126,8 +128,8 @@ export const projects = [
       "BYOK key resolver with shared-pool-first, private-key-upgrade flow.",
     ],
     links: [
-      { label: "Repo ↗", href: "#" },
-      { label: "Demo ↗", href: "#" },
+      { label: "Repo ↗", href: "https://github.com/NightmareXIX/llm-gateway-project" },
+      { label: "Demo ↗", href: "https://llm-gateway-project.vercel.app" },
     ],
   },
   {
@@ -143,8 +145,8 @@ export const projects = [
       "Feed posts, collaboration requests, job applications, notifications and real-time messaging.",
     ],
     links: [
-      { label: "Repo ↗", href: "#" },
-      { label: "Demo ↗", href: "#" },
+      { label: "Repo ↗", href: "https://github.com/NightmareXIX/icentral" },
+      { label: "Demo ↗", href: "https://icentral-official.pages.dev/home" },
     ],
   },
   {
@@ -159,7 +161,9 @@ export const projects = [
       "Authentication, health-metric tracking and real-time data synchronization.",
       "Gemini API integration for personalized nutrition insights.",
     ],
-    links: [{ label: "Repo ↗", href: "#" }],
+    links: [
+      { label: "Repo ↗", href: "https://github.com/NightmareXIX/Food-Delivery-App" },
+    ],
   },
   {
     h: "llm-guard-probe",
@@ -172,7 +176,9 @@ export const projects = [
       "CLI-based regression-testing harness for the OWASP LLM Top 10.",
       "Explores LLM safety failure modes as a security-adjacent project.",
     ],
-    links: [{ label: "Repo ↗", href: "#" }],
+    links: [
+      { label: "Repo ↗", href: "https://github.com/NightmareXIX/llm-guard-probe" },
+    ],
   },
 ];
 
@@ -235,17 +241,6 @@ export const education = {
 export const contact = [
   { k: "Email", v: profile.email, href: `mailto:${profile.email}` },
   { k: "Phone", v: profile.phoneDisplay, href: `tel:${profile.phone}` },
-  { k: "LinkedIn", v: profile.linkedin, href: "#" },
-  { k: "GitHub", v: profile.github, href: "#" },
+  { k: "LinkedIn", v: profile.linkedin, href: profile.linkedinUrl },
+  { k: "GitHub", v: profile.github, href: profile.githubUrl },
 ];
-
-// Chatbot canned answers (front-end shell only, no backend)
-export const botAnswers = {
-  stack:
-    "Deepest stack: Node/Express, React/Next.js, PostgreSQL, Docker, ASP.NET Core/C#. Secondary but demonstrated: FastAPI/Python and Flutter/Dart. Plus Redis, EF Core, JWT/RBAC.",
-  gateway:
-    "LLM Gateway (ongoing): an OpenAI-compatible API unifying Gemini, Groq and OpenRouter, with typed-error mid-stream failover (zero duplicate output) and atomic Redis/Lua quota accounting.",
-  contest:
-    "Codeforces Specialist (peak 1584), 2× ICPC Dhaka Regional Finalist (2024, 2025 — 48th/310+), IUPC finishes (MU 31st/91, BUET 46th/110, CUET 62nd/130), plus HackTheAI, InnovateX 2026 and BUET GameJam.",
-  def: "This is a static front-end shell for the design comparison — no live model yet. Try a chip, or reach Sadnan at fardinislamsadnan@gmail.com.",
-};

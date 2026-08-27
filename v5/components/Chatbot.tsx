@@ -1,36 +1,64 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { parseActions } from "@/lib/bot/actions";
-import { decodeEvent } from "@/lib/bot/types";
+// Shell + conversation state + the SSE fetch loop. Everything visual moved to
+// `components/bot/` in Phase 5; this file decides *what* is on screen, not what it looks like.
 
-type Msg = { id: number; who: "bot" | "me"; text: string };
+import { useEffect, useRef, useState } from "react";
+
+import { type ActionId } from "@/lib/bot/actions";
+import { isDeflection } from "@/lib/bot/deflect";
+import {
+  isNavAction,
+  NAV_COLLAPSE_MS,
+  prefersReducedMotion,
+  runAction,
+} from "@/lib/bot/navigate";
+import { splitStreaming } from "@/lib/bot/tokens";
+import { decodeEvent } from "@/lib/bot/types";
+import BotAvatar, { type BotState } from "@/components/bot/BotAvatar";
+import ChatPanel from "@/components/bot/ChatPanel";
+import type { Msg } from "@/components/bot/ChatMessage";
 
 const NETWORK_ERROR = "couldn't reach the brain 😵‍💫 try again";
 
-/**
- * The prompt emits [[action]] tokens; turning them into buttons is Phase 6. Until then they
- * are stripped through the frozen contract so a raw token never reaches the bubble. The
- * second pass drops a half-arrived token — mid-stream the text can end on "[[nav:pro", which
- * `parseActions` correctly ignores but which would flicker on screen for a frame.
- */
-function strip(text: string): string {
-  return parseActions(text).clean.replace(/\[\[[^\]]*$/, "").trimEnd();
-}
+/** How long the head stays tilted after a deflection before settling back to idle. */
+const DEFLECT_HOLD_MS = 2200;
+
+const GREETING: Msg = {
+  id: 0,
+  who: "bot",
+  text: "Hey! I'm a front-end assistant shell for Sadnan's portfolio. Ask about his stack, projects or contest results.",
+  actions: [],
+};
 
 export default function Chatbot() {
   const [open, setOpen] = useState(false);
-  const [msgs, setMsgs] = useState<Msg[]>([
-    { id: 0, who: "bot", text: "Hey! I'm a front-end assistant shell for Sadnan's portfolio. Ask about his stack, projects or contest results." },
-  ]);
+  const [msgs, setMsgs] = useState<Msg[]>([GREETING]);
   const [val, setVal] = useState("");
   const [busy, setBusy] = useState(false);
-  const bodyRef = useRef<HTMLDivElement>(null);
+  const [botState, setBotState] = useState<BotState>("idle");
+  const [streamingId, setStreamingId] = useState<number | null>(null);
+  // Phase 6: the panel plays its 240ms fold before the page starts moving, and the badge
+  // wears the travel toast until the landing flash has finished.
+  const [collapsing, setCollapsing] = useState(false);
+  const [traveling, setTraveling] = useState(false);
   const idRef = useRef(0);
+  const deflectTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const navTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  useEffect(() => {
-    if (bodyRef.current) bodyRef.current.scrollTop = bodyRef.current.scrollHeight;
-  }, [msgs, open]);
+  useEffect(() => () => {
+    if (deflectTimer.current) clearTimeout(deflectTimer.current);
+    if (navTimer.current) clearTimeout(navTimer.current);
+  }, []);
+
+  /** Hold the tilt long enough to read, then settle. Re-asking cancels the pending settle. */
+  const settle = (state: BotState) => {
+    if (deflectTimer.current) clearTimeout(deflectTimer.current);
+    setBotState(state);
+    if (state === "deflecting") {
+      deflectTimer.current = setTimeout(() => setBotState("idle"), DEFLECT_HOLD_MS);
+    }
+  };
 
   const ask = async (q: string) => {
     const text = q.trim();
@@ -40,10 +68,22 @@ export default function Chatbot() {
     setOpen(true);
     setVal("");
     setBusy(true);
-    setMsgs((m) => [...m, { id: botId - 1, who: "me", text }, { id: botId, who: "bot", text: "" }]);
+    settle("thinking"); // no token has landed yet — the visor cycles until one does
+    setStreamingId(botId);
+    setMsgs((m) => [
+      ...m,
+      { id: botId - 1, who: "me", text, actions: [] },
+      { id: botId, who: "bot", text: "", actions: [] },
+    ]);
 
-    const write = (t: string) =>
-      setMsgs((m) => m.map((x) => (x.id === botId ? { ...x, text: strip(t) } : x)));
+    // Written on every delta; read once at the end to classify the finished reply.
+    let final = "";
+
+    const write = (t: string) => {
+      const { clean, actions } = splitStreaming(t);
+      final = clean;
+      setMsgs((m) => m.map((x) => (x.id === botId ? { ...x, text: clean, actions } : x)));
+    };
 
     try {
       const res = await fetch("/api/chat", {
@@ -77,6 +117,9 @@ export default function Chatbot() {
             if (event.type === "text") {
               acc += event.delta;
               write(acc);
+              // First visible token: thinking → speaking. Cheap enough to set every delta,
+              // but React bails out of a re-render when the value is unchanged.
+              setBotState("speaking");
             } else if (event.type === "error") {
               write(event.message);
               errored = true;
@@ -93,43 +136,63 @@ export default function Chatbot() {
     } catch {
       write(NETWORK_ERROR);
     } finally {
+      setStreamingId(null);
       setBusy(false);
+      const dodged = isDeflection(final);
+      if (dodged) setMsgs((m) => m.map((x) => (x.id === botId ? { ...x, deflect: true } : x)));
+      settle(dodged ? "deflecting" : "idle");
     }
+  };
+
+  /**
+   * Chip click. A link action just opens — the panel is the visitor's place and closing it
+   * under them to open a mail client would be rude. A nav action is the four-step sequence
+   * from CHATBOT_PLAN §7, and only step 1 (the fold) is ours; `runAction` owns the rest.
+   */
+  const onAction = (id: ActionId) => {
+    if (!isNavAction(id)) {
+      runAction(id);
+      return;
+    }
+    if (navTimer.current) clearTimeout(navTimer.current);
+    setTraveling(true);
+    setCollapsing(true);
+    // Under reduced motion the fold is a no-op in CSS, so waiting on it would just be dead
+    // time between the click and the jump.
+    navTimer.current = setTimeout(() => {
+      navTimer.current = null;
+      setCollapsing(false);
+      setOpen(false);
+      if (runAction(id, { onSettled: () => setTraveling(false) }) !== "nav") setTraveling(false);
+    }, prefersReducedMotion() ? 0 : NAV_COLLAPSE_MS);
   };
 
   return (
     <>
-      <button id="chatBadge" onClick={() => setOpen((o) => !o)} aria-label="Open assistant">
-        <span className="d" /> Ask AI
+      <button
+        id="chatBadge"
+        onClick={() => setOpen((o) => !o)}
+        aria-label={open ? "Close assistant" : "Open assistant"}
+        aria-expanded={open}
+      >
+        <BotAvatar size="badge" state={botState} />
+        <span className="ch-badge-label">Ask AI</span>
+        {traveling && <span className="ch-toast" role="status">⌄ taking you there</span>}
       </button>
 
       {open && (
-        <div className="chat-panel" role="dialog" aria-label="Ask Sadnan-Bot">
-          <div className="ch-head">
-            <div className="t">Ask Sadnan-Bot</div>
-            <button onClick={() => setOpen(false)} aria-label="Close">×</button>
-          </div>
-          <div className="ch-body" ref={bodyRef}>
-            {msgs.map((m) => (
-              <div key={m.id} className={`ch-msg ${m.who}`}>{m.text || "…"}</div>
-            ))}
-          </div>
-          <div className="ch-chips">
-            <button onClick={() => ask("What is your stack?")}>Stack?</button>
-            <button onClick={() => ask("Tell me about the LLM Gateway")}>LLM Gateway?</button>
-            <button onClick={() => ask("Contest results?")}>Contest results?</button>
-          </div>
-          <div className="ch-input">
-            <input
-              value={val}
-              disabled={busy}
-              placeholder={busy ? "thinking…" : "ask anything…"}
-              onChange={(e) => setVal(e.target.value)}
-              onKeyDown={(e) => { if (e.key === "Enter") ask(val); }}
-            />
-            <button onClick={() => ask(val)} disabled={busy} aria-label="Send">→</button>
-          </div>
-        </div>
+        <ChatPanel
+          msgs={msgs}
+          busy={busy}
+          botState={botState}
+          streamingId={streamingId}
+          value={val}
+          onValue={setVal}
+          onAsk={ask}
+          onClose={() => setOpen(false)}
+          onAction={onAction}
+          collapsing={collapsing}
+        />
       )}
     </>
   );

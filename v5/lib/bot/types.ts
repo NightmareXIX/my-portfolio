@@ -8,6 +8,13 @@ export type BotEvent =
   | { type: "done" }
   | { type: "error"; message: string };
 
+/**
+ * One stored conversation turn. Lives here rather than in `session.ts` because both the
+ * session store (which persists them) and the providers (which replay them) need the shape,
+ * and neither should import the other.
+ */
+export type Turn = { role: "user" | "model"; text: string };
+
 /** Longest message the route accepts, in characters. */
 export const MAX_MESSAGE_CHARS = 400;
 

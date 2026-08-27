@@ -73,7 +73,7 @@ export default function Sections() {
           </nav>
           <div className="nav-right">
             <Clock />
-            <a href="/resume.pdf" target="_blank" rel="noopener" className="badge-work resume-link">Résumé ↗</a>
+            <a href="/resume.pdf" target="_blank" rel="noopener noreferrer" className="badge-work resume-link">Résumé ↗</a>
           </div>
         </div>
       </header>
@@ -125,8 +125,8 @@ export default function Sections() {
                 <span className="frame-label">Kazi Fardin Islam · Dhaka</span>
               </div>
               <div className="social-row">
-                <a href="#" className="sbtn">Github ↗</a>
-                <a href="#" className="sbtn">LinkedIn ↗</a>
+                <a href={profile.githubUrl} target="_blank" rel="noopener noreferrer" className="sbtn">Github ↗</a>
+                <a href={profile.linkedinUrl} target="_blank" rel="noopener noreferrer" className="sbtn">LinkedIn ↗</a>
                 <a href={`mailto:${profile.email}`} className="sbtn">Email ↗</a>
               </div>
             </div>
@@ -144,7 +144,7 @@ export default function Sections() {
       </section>
 
       {/* ABOUT */}
-      <section className="blk band paper" id="about">
+      <section className="blk band paper" id="about" data-section="about">
         <div className="wrap" data-reveal>
           <div className="sec-top"><span className="sec-no">01</span><h2 className="sec-title">About</h2></div>
           <p className="sec-lead">
@@ -163,7 +163,7 @@ export default function Sections() {
       </section>
 
       {/* SKILLS */}
-      <section className="blk band card has-doodles" id="skills">
+      <section className="blk band card has-doodles" id="skills" data-section="skills">
         <div className="wrap" data-reveal>
           <div className="sec-top"><span className="sec-no">02</span><h2 className="sec-title">Skills</h2></div>
           <div className="grid g2">
@@ -181,7 +181,7 @@ export default function Sections() {
       </section>
 
       {/* PROJECTS */}
-      <section className="blk band accent has-doodles" id="projects">
+      <section className="blk band accent has-doodles" id="projects" data-section="projects">
         <div className="wrap" data-reveal>
           <div className="sec-top"><span className="sec-no">03</span><h2 className="sec-title">Projects</h2></div>
           <p className="sec-lead">Five projects — every bullet traces to real work. No fabricated metrics, no filler.</p>
@@ -196,7 +196,11 @@ export default function Sections() {
                 <div className="ctx">{pr.ctx}</div>
                 <div className="stk">{pr.stack.map((s, j) => <span key={j}>{s}</span>)}</div>
                 <ul>{pr.bullets.map((b, j) => <li key={j}>{b}</li>)}</ul>
-                <div className="plinks">{pr.links.map((l, j) => <a href={l.href} key={j}>{l.label}</a>)}</div>
+                <div className="plinks">
+                  {pr.links.map((l, j) => (
+                    <a href={l.href} target="_blank" rel="noopener noreferrer" key={j}>{l.label}</a>
+                  ))}
+                </div>
               </div>
             ))}
           </div>
@@ -204,7 +208,7 @@ export default function Sections() {
       </section>
 
       {/* CP */}
-      <section className="blk band paper" id="contest">
+      <section className="blk band paper" id="contest" data-section="contest">
         <div className="wrap" data-reveal>
           <div className="sec-top"><span className="sec-no">04</span><h2 className="sec-title">Competitive Programming &amp; Hackathons</h2></div>
           <div className="grid g3">
@@ -216,7 +220,7 @@ export default function Sections() {
       </section>
 
       {/* RESEARCH */}
-      <section className="blk band pop" id="research">
+      <section className="blk band pop" id="research" data-section="research">
         <div className="wrap" data-reveal>
           <div className="sec-top"><span className="sec-no">05</span><h2 className="sec-title">Research &amp; Publications</h2></div>
           <div className="grid g2">
@@ -232,7 +236,7 @@ export default function Sections() {
       </section>
 
       {/* EXPERIENCE */}
-      <section className="blk band card" id="experience">
+      <section className="blk band card" id="experience" data-section="experience">
         <div className="wrap" data-reveal>
           <div className="sec-top"><span className="sec-no">06</span><h2 className="sec-title">Experience</h2></div>
           <div className="rows">
@@ -250,7 +254,7 @@ export default function Sections() {
       </section>
 
       {/* EDUCATION */}
-      <section className="blk band paper has-doodles" id="education">
+      <section className="blk band paper has-doodles" id="education" data-section="education">
         <div className="wrap" data-reveal>
           <div className="sec-top"><span className="sec-no">07</span><h2 className="sec-title">Education</h2></div>
           <div className="row">
@@ -264,7 +268,7 @@ export default function Sections() {
       </section>
 
       {/* CONTACT */}
-      <section className="blk band pop" id="contact">
+      <section className="blk band pop" id="contact" data-section="contact">
         <div className="wrap final" data-reveal>
           <div className="sec-top" style={{ justifyContent: "center" }}><span className="sec-no">08</span></div>
           <h2>LET&apos;S BUILD</h2>
@@ -272,7 +276,14 @@ export default function Sections() {
           <a href="#projects" className="btn btn-primary">View Projects →</a>
           <div className="cgrid">
             {contact.map((c, i) => (
-              <a className="cc" href={c.href} key={i}>
+              <a
+                className="cc"
+                href={c.href}
+                key={i}
+                {...(c.href.startsWith("http")
+                  ? { target: "_blank", rel: "noopener noreferrer" }
+                  : {})}
+              >
                 <span className="k">{c.k}</span><span className="v">{c.v}</span>
               </a>
             ))}
