@@ -20,7 +20,11 @@ import { NextResponse, type NextRequest } from "next/server";
 const isDev = process.env.NODE_ENV !== "production";
 
 export function middleware(request: NextRequest) {
-  const nonce = Buffer.from(crypto.randomUUID()).toString("base64");
+  // `Buffer` is Node-only. Next's local edge-runtime simulation polyfills it (so this built and
+  // ran fine locally), but Vercel's actual production Edge Runtime does not, and throws
+  // MIDDLEWARE_INVOCATION_FAILED on every request. `btoa` is the Web-standard equivalent, and
+  // safe here since crypto.randomUUID() is plain ASCII (hex digits + hyphens).
+  const nonce = btoa(crypto.randomUUID());
 
   const csp = [
     "default-src 'self'",
