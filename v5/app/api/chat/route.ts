@@ -1,9 +1,10 @@
-// Phase 1 — the pipe. Browser → here → Gemini → SSE deltas back.
-// No persona, no guardrails, no rate limiting, no history: those are phases 2, 3 and 4.
+// Browser → here → Gemini → SSE deltas back, with the persona prompt from `lib/bot/prompt.ts`.
+// Still no guardrails, no rate limiting, no history: those are phases 3 and 4.
 
 import { GoogleGenAI, ThinkingLevel } from "@google/genai";
 import { z } from "zod";
 
+import { buildSystemPrompt, resolveGlazeLevel } from "@/lib/bot/prompt";
 import { encodeEvent, MAX_MESSAGE_CHARS, SSE_HEADERS, type BotEvent } from "@/lib/bot/types";
 
 export const runtime = "edge";
@@ -15,10 +16,18 @@ const MAX_OUTPUT_TOKENS = 320;
 const TIMEOUT_MESSAGE = "brain buffering 😵‍💫";
 const GENERIC_ERROR = "brain offline for a sec 😵‍💫 try again";
 
-// Placeholder. The real persona, knowledge base and glaze levels are Phase 2 — nothing
-// resembling a system prompt should grow here in the meantime.
-const SYSTEM_PROMPT =
-  "You answer questions about Kazi Fardin Islam's portfolio. Be brief.";
+// Built once per isolate, not per request: identical bytes on every call is what makes
+// Gemini's implicit caching hit. GLAZE_LEVEL only moves tone, never facts.
+let cachedPrompt: string | null = null;
+function systemPrompt(): string {
+  if (cachedPrompt === null) {
+    cachedPrompt = buildSystemPrompt({
+      glaze: resolveGlazeLevel(process.env.GLAZE_LEVEL),
+      provider: "gemini",
+    });
+  }
+  return cachedPrompt;
+}
 
 const BodySchema = z.strictObject({
   message: z.string().trim().min(1).max(MAX_MESSAGE_CHARS),
@@ -86,7 +95,7 @@ export async function POST(req: Request): Promise<Response> {
           contents: message,
           config: {
             abortSignal: abort.signal,
-            systemInstruction: SYSTEM_PROMPT,
+            systemInstruction: systemPrompt(),
             maxOutputTokens: MAX_OUTPUT_TOKENS,
             // This model thinks by default; on a "paraphrase a short brief" workload that
             // is latency and tokens spent on nothing. See CHATBOT_PLAN §9.

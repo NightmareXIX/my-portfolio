@@ -1,11 +1,22 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { parseActions } from "@/lib/bot/actions";
 import { decodeEvent } from "@/lib/bot/types";
 
 type Msg = { id: number; who: "bot" | "me"; text: string };
 
 const NETWORK_ERROR = "couldn't reach the brain 😵‍💫 try again";
+
+/**
+ * The prompt emits [[action]] tokens; turning them into buttons is Phase 6. Until then they
+ * are stripped through the frozen contract so a raw token never reaches the bubble. The
+ * second pass drops a half-arrived token — mid-stream the text can end on "[[nav:pro", which
+ * `parseActions` correctly ignores but which would flicker on screen for a frame.
+ */
+function strip(text: string): string {
+  return parseActions(text).clean.replace(/\[\[[^\]]*$/, "").trimEnd();
+}
 
 export default function Chatbot() {
   const [open, setOpen] = useState(false);
@@ -31,7 +42,8 @@ export default function Chatbot() {
     setBusy(true);
     setMsgs((m) => [...m, { id: botId - 1, who: "me", text }, { id: botId, who: "bot", text: "" }]);
 
-    const write = (t: string) => setMsgs((m) => m.map((x) => (x.id === botId ? { ...x, text: t } : x)));
+    const write = (t: string) =>
+      setMsgs((m) => m.map((x) => (x.id === botId ? { ...x, text: strip(t) } : x)));
 
     try {
       const res = await fetch("/api/chat", {
