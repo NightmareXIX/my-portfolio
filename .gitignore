@@ -1,0 +1,28 @@
+# dependencies
+node_modules/
+
+# next.js build output
+.next/
+out/
+
+# secrets — never commit these
+.env
+.env.local
+.env.*.local
+.env.development
+.env.production
+
+# logs
+*.log
+npm-debug.log*
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+# os / editor cruft
+.DS_Store
+Thumbs.db
+
+# tool scratch
+.playwright-mcp/

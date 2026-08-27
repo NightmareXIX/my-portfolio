@@ -1,0 +1,47 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "bounce-easing",
+        "value": "stamp-wobble",
+        "createdAt": "2026-08-26T20:38:53.113Z",
+        "reason": "Neo-brutalist poster: signature playful wobble on the 'available for hire' stamp; intentional pre-existing motion"
+      },
+      {
+        "rule": "bounce-easing",
+        "value": "cubic-bezier(.2, .8, .3, 1.3)",
+        "createdAt": "2026-08-26T20:38:53.188Z",
+        "reason": "Neo-brutalist comic aesthetic: springy box-pop easing is the established motion language"
+      },
+      {
+        "rule": "bounce-easing",
+        "value": "cubic-bezier(.2, .8, .3, 1.25)",
+        "createdAt": "2026-08-26T20:38:53.262Z",
+        "reason": "Neo-brutalist comic aesthetic: springy box-pop easing is the established motion language"
+      },
+      {
+        "rule": "bounce-easing",
+        "value": "cubic-bezier(.2, .8, .3, 1.35)",
+        "createdAt": "2026-08-26T20:38:53.336Z",
+        "reason": "Neo-brutalist comic aesthetic: springy loader/entrance pop, established motion language"
+      },
+      {
+        "rule": "border-accent-on-rounded",
+        "value": "*",
+        "files": [
+          "app/globals.css"
+        ],
+        "createdAt": "2026-08-26T20:39:11.418Z",
+        "reason": "False positive: neo-brutalist system is deliberately square; flagged .ch-head has a 4px bottom border and no border-radius. Any border+radius combos (e.g. status pills) are intentional."
+      },
+      {
+        "rule": "bounce-easing",
+        "value": "cubic-bezier(.2, .8, .3, 1.5)",
+        "createdAt": "2026-08-26T20:56:55.604Z",
+        "reason": "Neo-brutalist comic aesthetic: springy overshoot on floating-icon hover, same established playful motion language"
+      }
+    ]
+  }
+}

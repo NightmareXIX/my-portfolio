@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" shape-rendering="geometricPrecision">
+  <style>
+    .mark { transform-box: fill-box; transform-origin: center; animation: seal-breathe 6s ease-in-out infinite; }
+    .spin { transform-box: fill-box; transform-origin: center; animation: seal-spin 6s linear infinite; }
+    .dot  { transform-box: fill-box; transform-origin: center; animation: seal-pulse 6s ease-in-out infinite; }
+    @keyframes seal-spin  { to { transform: rotate(360deg); } }
+    @keyframes seal-breathe { 0%,100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+    @keyframes seal-pulse { 0%,100% { transform: scale(1); } 25%,75% { transform: scale(1.22); } 50% { transform: scale(1); } }
+    @media (prefers-reduced-motion: reduce) { .mark,.spin,.dot { animation: none; } }
+  </style>
+  <g class="mark">
+    <circle cx="100" cy="100" r="84" fill="#111111" stroke="#fdfbf4" stroke-width="6"/>
+    <g class="spin">
+      <path d="M100,40l9.95,35.98l32.48-18.41-18.41,32.48L160,100l-35.98,9.95l18.41,32.48-32.48-18.41L100,160l-9.95-35.98-32.48,18.41l18.41-32.48L40,100l35.98-9.95L57.57,57.57L90.05,75.98L100,40Z" fill="#fdfbf4"/>
+    </g>
+    <g class="dot"><circle cx="100" cy="100" r="12" fill="#111111"/></g>
+  </g>
+</svg>

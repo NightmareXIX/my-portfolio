@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="260" height="260" viewBox="0 0 260 260" fill="none" stroke="#0c0c0c" stroke-width="5" stroke-linejoin="round" stroke-linecap="round">
+  <!-- outlined 5-point star -->
+  <path d="M52 24 L61 46 L85 48 L67 64 L73 88 L52 75 L31 88 L37 64 L19 48 L43 46 Z"/>
+  <!-- lightning bolt (filled) -->
+  <path d="M196 18 L172 74 L190 74 L166 128 L214 62 L194 62 Z" fill="#0c0c0c" stroke-width="3"/>
+  <!-- concentric circles -->
+  <circle cx="118" cy="150" r="26"/>
+  <circle cx="118" cy="150" r="13"/>
+  <!-- 4-point sparkle (filled) -->
+  <path d="M214 150 C214 168 216 170 234 172 C216 174 214 176 214 194 C214 176 212 174 194 172 C212 170 214 168 214 150 Z" fill="#0c0c0c" stroke-width="2"/>
+  <!-- zigzag -->
+  <path d="M20 150 L36 138 L36 162 L52 138 L52 162 L68 150" fill="none"/>
+  <!-- burst / asterisk -->
+  <g stroke-width="5">
+    <path d="M156 210 L156 246 M138 228 L174 228 M143 215 L169 241 M169 215 L143 241"/>
+  </g>
+  <!-- fan / rays -->
+  <path d="M110 236 L100 210 M120 240 L120 208 M130 236 L140 210" fill="none"/>
+  <!-- dots -->
+  <circle cx="228" cy="112" r="5" fill="#0c0c0c" stroke="none"/>
+  <circle cx="84" cy="112" r="5" fill="#0c0c0c" stroke="none"/>
+  <circle cx="40" cy="210" r="5" fill="#0c0c0c" stroke="none"/>
+</svg>

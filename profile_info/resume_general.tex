@@ -1,0 +1,121 @@
+\documentclass[letterpaper,10pt]{article}
+
+% Content: general resume. Styling: Charter-based ATS-friendly template.
+\usepackage[top=0.36in, bottom=0.36in, left=0.5in, right=0.5in]{geometry}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{titlesec}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{charter}
+\usepackage{microtype}
+
+% Improves PDF text extraction for ATS where supported.
+\input{glyphtounicode}
+\pdfgentounicode=1
+
+\pagestyle{empty}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0pt}
+\urlstyle{same}
+
+% Slightly larger body text than the default 10pt while staying one-page friendly.
+\AtBeginDocument{\fontsize{10.5pt}{12.5pt}\selectfont}
+
+% Clean section formatting for ATS parsing and recruiter readability.
+\titleformat{\section}{\fontsize{11.8pt}{13.5pt}\selectfont\bfseries\uppercase}{}{0em}{}[\vspace{1.5pt}\titlerule]
+\titlespacing{\section}{0pt}{5pt}{3pt}
+
+% More readable bullets while still compact enough for one page.
+\setlist[itemize]{leftmargin=0.2in, itemsep=1.8pt, topsep=1.5pt, parsep=0pt, partopsep=0pt}
+
+% Spacing between entries within a section.
+\newcommand{\entrygap}{\vspace{3pt}}
+
+% Links
+\hypersetup{
+    colorlinks=true,
+    urlcolor=black,
+    linkcolor=black,
+    citecolor=black
+}
+
+\begin{document}
+
+% --- HEADER ---
+\noindent
+{\fontsize{19.5pt}{22pt}\selectfont \textbf{Kazi Fardin Islam}}\\[3pt]
+{\fontsize{10.3pt}{11.9pt}\selectfont
+Bashabo, Dhaka $|$
+\href{mailto:fardinislamsadnan@gmail.com}{fardinislamsadnan@gmail.com} $|$
++8801886694400 $|$
+\href{https://www.linkedin.com/in/fardin-islam-sadnan-162ba6248/}{LinkedIn} $|$
+\href{https://github.com/NightmareXIX}{GitHub} $|$
+\href{https://fardinislamsadnan.vercel.app/}{Portfolio}
+}\\[4pt]
+{\fontsize{9.9pt}{12pt}\selectfont\itshape
+Recent Information and Communication Engineering graduate with a strong foundation in object-oriented software development,
+algorithms, and problem-solving. Hands-on experience building backend and full-stack web applications, with a growing interest
+in Machine Learning and AI-assisted engineering. A fast learner who thrives in collaborative, cross-functional teams.
+}
+
+% --- EDUCATION ---
+\section*{Education}
+\textbf{University of Rajshahi} \hfill Rajshahi, Bangladesh \\
+\textit{BSc in Information and Communication Engineering} \hfill \textbf{CGPA: 3.60/4.00} $|$ Mar 2022 -- Jul 2026 \\
+\textbf{Relevant Coursework:} Data Structures \& Algorithms, OOP (Java), DBMS, Computer Networks, Software Engineering, Artificial Intelligence \& Neural Networks, Cryptography
+
+% --- PROBLEM SOLVING & COMPETITIONS ---
+\section*{Problem Solving \& Competitions}
+\begin{itemize}
+    \item \textbf{Codeforces Specialist:} Peak rating \textbf{1584}, built through consistent rated-contest performance and a strong command of algorithms and data structures. \href{https://codeforces.com/profile/Sednone}{[\textbf{Profile}]}
+    \item \textbf{ICPC \& IUPC:} 2$\times$ ICPC Dhaka Regional Finalist (2024, 2025), ranked \href{https://icpc.global/regionals/finder/Dhaka-2026/standings}{\textbf{48th/310+}} in 2025; top IUPC finishes --- MU \href{https://toph.co/c/inter-university-mu-cse-fest-2025/standings}{\textbf{31st/91}}, BUET \href{https://toph.co/c/inter-university-buet-cse-fest-2026/standings}{\textbf{46th/110}}, and CUET \href{https://toph.co/c/cuet-iupc-2025/standings}{\textbf{62nd/130}}.
+    \item \textbf{Hackathons:} Finalist in \href{https://www.linkedin.com/posts/fardin-islam-sadnan-162ba6248_hacktheai-ai-hackathon-activity-7374463307413454848-IZqg}{\textbf{HackTheAI by SmythOS}} (29th/100+ prelim), \href{https://www.linkedin.com/posts/fardin-islam-sadnan-162ba6248_innovatex2025-hackathon-activity-7326538422200795136-dVeL}{\textbf{InnovateX 2026}} and \href{https://itch.io/jam/buet-cse-fest-2023-game-jam/results}{\textbf{BUET GameJam 2023}} (11th prelim).
+\end{itemize}
+
+% --- SKILLS ---
+\section*{Technical Skills}
+\textbf{Languages:} Python, C\#, JavaScript, TypeScript, C, C++, Java, Dart \\
+\textbf{Backend \& Databases:} FastAPI, Node.js, Express.js, PostgreSQL, MySQL, Redis, Supabase \\
+\textbf{Frontend, Mobile \& Game Dev:} React, Next.js, HTML/CSS, Flutter, Unity \\
+\textbf{AI-Assisted Development:} Claude Code, OpenAI Codex, Gemini CLI \\
+\textbf{Developer Tools:} Git, GitHub, Docker, Postman \\
+\textbf{Core Concepts:} Object-Oriented Design, Data Structures, Algorithms, DBMS, REST APIs, Microservices
+
+% --- PROJECTS ---
+\section*{Projects}
+\textbf{LLM Gateway --- Unified Multi-Provider LLM API} (Ongoing) \hfill
+\href{https://llm-gateway-project.vercel.app/}{\textbf{Live Demo}} $|$ \href{https://github.com/NightmareXIX/llm-gateway-project}{\textbf{GitHub}} \\
+\textit{Tech Stack: Python, FastAPI, PostgreSQL, Redis (Lua), Next.js/TypeScript, Supabase Auth}
+\begin{itemize}
+    \item Built an OpenAI-compatible API gateway unifying three free-tier LLM providers (Gemini, Groq, OpenRouter) behind a single contract, giving client apps provider-agnostic access without hand-rolled failover.
+    \item Designed a provider-adapter protocol with a typed error taxonomy that drives automatic mid-stream failover, restarting a dropped stream on a different provider with zero duplicate output.
+    \item Enforced conversation integrity with a canonical message schema and atomic Redis/Lua quota accounting across heterogeneous per-provider rate limits.
+\end{itemize}
+\entrygap
+\textbf{ICEntral --- Department Community Platform} \hfill
+\href{https://icentral-official.pages.dev/home}{\textbf{Live Demo}} $|$ \href{https://github.com/NightmareXIX/icentral.git}{\textbf{GitHub}} \\
+\textit{Tech Stack: React (Vite), Node.js, Express, PostgreSQL, Docker}
+\begin{itemize}
+    \item Built a full-stack department community platform with a centralized API gateway and modular services for authentication, users, posts, jobs, and chat.
+    \item Implemented JWT authentication and role-based access control for protected routes, moderation workflows, and alumni verification.
+    \item Developed integrated community features including feed posts, collaboration requests, job applications, notifications, and real-time messaging.
+\end{itemize}
+
+% --- LEADERSHIP & COMMUNITY ---
+\section*{Leadership \& Community}
+\textbf{Programming Club, University of Rajshahi} \hfill Rajshahi, Bangladesh \\
+\textit{Programming Instructor \& Problem Setter} \hfill Jan 2026 -- Jul 2026
+\begin{itemize}
+    \item Coached students in competitive programming with focused training on recursion, backtracking, graph algorithms, and broader problem-solving strategies.
+    \item Authored algorithmic problems for an \href{https://codeforces.com/contestInvitation/77ae2fde9185b7d3d17496824500636617f60686}{\textbf{Inter-University Programming Contest}} celebrating International Girls in ICT Day, in collaboration with IEEE BS, IEEE WIE, and IEEE RUSB.
+\end{itemize}
+\entrygap
+\textbf{IEEE RUSB CS Chapter} \hfill Rajshahi, Bangladesh \\
+\textit{Vice President} \hfill Apr 2025 -- Feb 2026
+\begin{itemize}
+    \item Directed a 5-member executive committee to plan and deliver technical seminars, workshops, and student events.
+    \item Oversaw event coordination and team communication, growing student participation in chapter activities.
+\end{itemize}
+
+\end{document}

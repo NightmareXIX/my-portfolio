@@ -1,0 +1,13 @@
+Sitemap (9 sections + 1 flagged feature):
+
+Hero — name, tagline, one-line pitch, CTA
+About — three-identities framing
+Skills — grouped by category
+Projects — 5-project grid, uniform quick-overview schema
+Competitive Programming & Hackathons — CF Specialist, ICPC, IUPC, contest authorship/coaching, hackathon finishes
+Research & Publications — Best Paper ICTDsC 2024, BSc thesis, active submissions
+Experience — Programming Instructor, VP IEEE RUSB CS Chapter
+Education — University of Rajshahi
+Contact / Footer — email, phone, LinkedIn, GitHub
+
+Feature (placement/purpose TBD): AI Chatbot
