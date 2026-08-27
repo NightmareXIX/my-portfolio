@@ -56,15 +56,13 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: [
-    // Everything except Next's own immutable static output and the public files, which are
-    // served straight from the CDN and carry no inline anything.
-    {
-      source: "/((?!_next/static|_next/image|favicon.ico|assets/|portrait.jpg|resume.pdf).*)",
-      missing: [
-        { type: "header", key: "next-router-prefetch" },
-        { type: "header", key: "purpose", value: "prefetch" },
-      ],
-    },
-  ],
+  // Everything except Next's own immutable static output and the public files, which are
+  // served straight from the CDN and carry no inline anything.
+  //
+  // This used to also carry a `missing:` condition skipping prefetch requests — valid Next.js
+  // API, but Vercel's build-platform matcher validator (older/stricter than Next's own) only
+  // accepts a plain string or string[], not the object form. Dropping it just means prefetch
+  // requests also get a nonce stamped on them, which is thrown away unused — no behavior change
+  // for a rendered page.
+  matcher: ["/((?!_next/static|_next/image|favicon.ico|assets/|portrait.jpg|resume.pdf).*)"],
 };
