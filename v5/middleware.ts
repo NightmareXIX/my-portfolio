@@ -15,6 +15,24 @@
 //      unthemed. A style attribute cannot execute script, so this is a narrow, deliberate
 //      exception — `script-src` keeps no 'unsafe-inline' of any kind.
 
+// WHY `vercel.json` PINS THE FRAMEWORK (do not delete that file):
+//
+// Vercel picks the builder for THIS file from the project's framework preset. With no preset
+// (the dashboard read "No framework detected" after the project was reused from the old static
+// site), it falls back to the GENERIC Routing Middleware builder, which ships this file as raw
+// transpiled source plus an UNBUNDLED CommonJS `node_modules/next` tree. `next/server` then
+// pulls in `next/dist/compiled/ua-parser-js`, whose ncc preamble ends with:
+//
+//     if (typeof __nccwpck_require__ !== "undefined") __nccwpck_require__.ab = __dirname + "/"
+//
+// The guard passes, `__dirname` does not exist in the edge isolate this runs in, and it throws
+// `ReferenceError: __dirname is not defined` at module init — every request, every route,
+// MIDDLEWARE_INVOCATION_FAILED, entire site 500. Nothing below is involved.
+//
+// The Next.js builder emits one pre-bundled edge file instead, where webpack has already folded
+// `__dirname` down to a literal. `vercel.json` declares the preset in the repo so a dashboard
+// setting can never drift back into the broken builder.
+
 import { NextResponse, type NextRequest } from "next/server";
 
 const isDev = process.env.NODE_ENV !== "production";

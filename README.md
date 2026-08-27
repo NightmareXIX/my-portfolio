@@ -56,6 +56,11 @@ answers rather than breaking. `CHATBOT_ENABLED=false` turns it off entirely.
 Vercel project → **Settings → General → Root Directory = `v5`**, then set every
 variable from `v5/.env.example` under Settings → Environment Variables.
 
+`v5/vercel.json` pins the framework to `nextjs`. Leave it in place — without a
+framework preset Vercel builds `middleware.ts` with its generic builder, which
+crashes the edge isolate on every request. The header of `v5/middleware.ts`
+explains the mechanism.
+
 `ALLOWED_ORIGINS` **must** contain the production origin
 (`https://fardinislamsadnan.vercel.app`) or the chat route rejects every request
 with a 403.

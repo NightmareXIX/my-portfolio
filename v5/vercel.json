@@ -1,25 +1,4 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-
-  "//": [
-    "This file exists for ONE reason: pinning the framework.",
-    "",
-    "Without it, Vercel builds `middleware.ts` with its GENERIC Routing Middleware builder",
-    "instead of the Next.js one. That builder ships the middleware as raw transpiled source",
-    "plus an UNBUNDLED CommonJS `node_modules/next` tree — and `next/server` pulls in",
-    "`next/dist/compiled/ua-parser-js`, whose ncc preamble ends with:",
-    "",
-    "    if (typeof __nccwpck_require__ !== 'undefined') __nccwpck_require__.ab = __dirname + '/'",
-    "",
-    "`__dirname` is Node-only and does not exist in the edge isolate the middleware runs in, so",
-    "it throws `ReferenceError: __dirname is not defined` at module init — on every request, for",
-    "every route: MIDDLEWARE_INVOCATION_FAILED, whole site 500. The Next.js builder instead",
-    "emits one pre-bundled edge file where webpack has already folded `__dirname` down to '/'.",
-    "",
-    "The dashboard's Framework Preset can be reset or carried over wrong from a previous",
-    "project (ours read 'No framework detected'). Declaring it here keeps the fix in the repo,",
-    "where it survives that."
-  ],
-
   "framework": "nextjs"
 }
